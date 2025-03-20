@@ -9,6 +9,8 @@ class CreateUploadController{
         const {image} = request.body;
         const ids = nanoid();
 
+     
+
         const createUserService = new CreateUploadService();
 
         const upload = await createUserService.execute({
@@ -21,46 +23,60 @@ class CreateUploadController{
         api_key: '977157797782912', 
         api_secret: 'PUrUIjl3IAp5ghsXqEznBWn7WVY' // Click 'View API Keys' above to copy your API secret
     });
-    
-   try {
-     // Upload an image
-     const uploadResult = await cloudinary.uploader
-       .upload(
-           `${image}`, {
-               public_id:ids,
+
+       
+    if(image === 'null'){
+        response.json({sucess:"false"})
+    }else{
+        try {
+            // Upload an image
+            const uploadResult = await cloudinary.uploader
+              .upload(
+                  `${image}`, {
+                      public_id:ids,
+                  }
+              ).then((res)=>{
+       
+               const data = {
+                   url:res.url
+                 
+               }
+               return response.json(data);
+              })
+            
+       
+           
+        
+           
+           
+           // Optimize delivery by resizing and applying auto-format and auto-quality
+           const optimizeUrl = cloudinary.url(`${ids}`, {
+               fetch_format: 'auto',
+               quality: 'auto'
+           });
+           
+         
+           
+           // Transform the image: auto-crop to square aspect_ratio
+           const autoCropUrl = cloudinary.url(`${ids}`, {
+               crop: 'auto',
+               gravity: 'auto',
+               width: 500,
+               height: 500,
+           });
+           
+            
+          } catch (error) {
+           return response.json('error ao enviar arquivo!');
+          }
+         
+              
            }
-       )
-       .catch((error) => {
-           console.log(error);
-       });
-    
-    console.log(uploadResult);
-
-    return response.json(uploadResult);
-    
-    // Optimize delivery by resizing and applying auto-format and auto-quality
-    const optimizeUrl = cloudinary.url(`${ids}`, {
-        fetch_format: 'auto',
-        quality: 'auto'
-    });
-    
-    console.log(optimizeUrl);
-    
-    // Transform the image: auto-crop to square aspect_ratio
-    const autoCropUrl = cloudinary.url(`${ids}`, {
-        crop: 'auto',
-        gravity: 'auto',
-        width: 500,
-        height: 500,
-    });
-    
-    console.log(autoCropUrl);    
-   } catch (error) {
-    return response.json('error ao enviar arquivo!');
-   }
-
-        return response.json(upload);
     }
+    
+
+
+    
 }
 
 export { CreateUploadController }

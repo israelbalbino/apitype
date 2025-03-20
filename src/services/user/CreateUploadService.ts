@@ -13,9 +13,6 @@ class CreateUploadService{
       
       
 
-        if(!image){
-            throw new Error("Iamge incorrect!")
-        }
 
         
 
