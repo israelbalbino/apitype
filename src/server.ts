@@ -5,6 +5,8 @@ import {router} from  './routes';
 
 const app = express();
 
+const port = process.env.PORT || 4000;
+
 app.use(express.json());
 app.use(cors());
 app.use(router);
@@ -23,4 +25,4 @@ app.use((err: Error, req: Request, res: Response, next:NextFunction)=>{
 
 })
 
-app.listen(3000, () => console.log('SERVIDOR ONLINE'));
+app.listen(port, () => console.log('SERVIDOR ONLINE'));
