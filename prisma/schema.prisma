@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id String @id @default(uuid())
+  name String
+  email String
+  password String
+  stripe_customer_id String?
+
+  created_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+  @@map("users")
+  subscriptions Subscription?
+  webhooks Webhook[]
+
+}
+
+model Subscription{
+  id String @id
+  status String
+  priceId String
+  created_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+  @@map("subscriptions")
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Webhook{
+  id String @id @default(uuid())
+  name String
+  token String
+  status Boolean @default(true)
+  created_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+  @@map("webhooks")
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+
+
+}
+
+model Notify{
+  id String @id @default(uuid())
+  token String
+  fullname String
+  email String
+  phone String
+  produto String
+  valor String
+  status String
+  created_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+
+  @@map("notifys")
+
+
+}
